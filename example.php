@@ -25,8 +25,13 @@ if (!isset($_SESSION['googlePlusOAuth']) && isset($_GET['verify']) && isset($_GE
 	exit;
 endif;
 
+/* No token, and no ?verify . Redirect to auth. */
+if (!isset($_SESSION['googlePlusOAuth'])):
+	header('Location: ' . $GooglePlus->getAuthorizationUrl() );
+endif;
+
 /* Set Access Token */
-$GooglePlus->setOAuthToken($GooglePlusToken->access_token);
+$GooglePlus->setOAuthToken($_SESSION['googlePlusOAuth']['access_token']);
 
 if (!$GooglePlus->testAuth())
 	die('Your token probably expired, or was not valid. Clear the session and try again.');
