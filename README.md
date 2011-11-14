@@ -1,0 +1,1 @@
+The included class is a very rudimentary example of how to connect to the Google+ API without using the GData Zend package. It has known limitations (for example, properly handling the OAuth 2.0 refresh tokens). It is intended to bootstrap your Google+ development efforts as the API is completed.
