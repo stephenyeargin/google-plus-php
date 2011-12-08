@@ -82,19 +82,18 @@ class GooglePlusPHP {
 			$data['grant_type'] = 'refresh_token';
 		endif;
 
-		$headers = array();
-		$headers[] = "Authorization: OAuth " . $code;
-
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://accounts.google.com/o/oauth2/token');
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		$response = curl_exec($ch);
 
 		if (in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(400,401)) ):
-			throw new Exception($response, curl_getinfo($ch, CURLINFO_HTTP_CODE));
+			$t_response = json_decode($response);
+			if ($t_response->error != '')
+				$response = $t_response->error;
+			throw new Exception('Server: ' . $response, curl_getinfo($ch, CURLINFO_HTTP_CODE));
 		endif;
 
 		$response = json_decode($response);
