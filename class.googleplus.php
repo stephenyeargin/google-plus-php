@@ -94,8 +94,7 @@ class GooglePlusPHP {
 		$response = curl_exec($ch);
 
 		if (in_array(curl_getinfo($ch, CURLINFO_HTTP_CODE), array(400,401)) ):
-			echo $response;
-			die();
+			throw new Exception($response, curl_getinfo($ch, CURLINFO_HTTP_CODE));
 		endif;
 
 		$response = json_decode($response);
