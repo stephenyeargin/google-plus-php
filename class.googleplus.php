@@ -50,9 +50,10 @@ class GooglePlusPHP {
 			$this->callbackUrl = $callbackUrl;
 
 		/* Authorization URL */
-		$url = sprintf('https://accounts.google.com/o/oauth2/auth?client_id=%s&redirect_uri=%s&scope=https://www.googleapis.com/auth/plus.me&response_type=code',
+		$url = sprintf('https://accounts.google.com/o/oauth2/auth?redirect_uri=%s&response_type=code&client_id=%s&approval_prompt=force&scope=%s&access_type=offline',
+			urlencode($this->callbackUrl),
 			$this->consumerKey,
-			$this->callbackUrl
+			urlencode('https://www.googleapis.com/auth/plus.me')
 		);
 
 		return $url;
@@ -74,6 +75,7 @@ class GooglePlusPHP {
 			$data['client_secret'] = $this->consumerSecret;
 			$data['redirect_uri'] = $this->callbackUrl;
 			$data['grant_type'] = 'authorization_code';
+			$data['scope'] = null;
 		else:
 			$data['client_id'] = $this->consumerKey;
 			$data['client_secret'] = $this->consumerSecret;
