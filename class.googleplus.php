@@ -34,7 +34,6 @@ class GooglePlusPHP {
 		if (isset($config['oauth_token']) && $config['oauth_token_secret']):
 			$this->oauthToken = $config['oauth_token'];
 			$this->oauthTokenSecret = $config['oauth_token_secret'];
-		else:
 		endif;
 	}
 
@@ -93,7 +92,7 @@ class GooglePlusPHP {
 			$t_response = json_decode($response);
 			if ($t_response->error != '')
 				$response = $t_response->error;
-			throw new Exception('Server: ' . $response, curl_getinfo($ch, CURLINFO_HTTP_CODE));
+			throw new GooglePlusPHPException('Server: ' . $response, curl_getinfo($ch, CURLINFO_HTTP_CODE));
 		endif;
 
 		$response = json_decode($response);
@@ -120,12 +119,12 @@ class GooglePlusPHP {
 	 */
 	function testAuth() {
 		$url = 'https://www.googleapis.com/plus/v1/people/me';
-		$result = $this->request($url);
-
-		if (isset($result->error))
-			return false;
-		else
+		try {
+			$result = $this->request($url);
 			return true;
+		} catch (GooglePlusPHPException $e) {
+			return false;
+		}
 	}
 
 	/**
@@ -219,8 +218,26 @@ class GooglePlusPHP {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$output = curl_exec($ch);
 
+		// Throw exception on no response from server
+		if (!$output)
+			throw new GooglePlusPHPException('No response from server.', curl_getinfo($ch, CURLINFO_HTTP_CODE) );
+
 		$return = json_decode($output);
+		
+		// Throw an exception on error
+		if (isset($return->error))
+			throw new GooglePlusPHPException($return->error->message, $return->error->code);
+		
 		return $return;
 	}
 
+}
+
+/**
+ * Google Plus (Google+) Exception Class
+ */
+class GooglePlusPHPException extends Exception {
+	public function __construct($message, $code = 0, Exception $previous = null) {
+		parent::__construct($message, $code, $previous);
+	}
 }
