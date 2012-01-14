@@ -200,6 +200,13 @@ class GooglePlusPHP {
 		return $result;
 	}
 
+	function getActivityReplies($activity_feed = '') {
+		$url = $activity_feed;
+		$result = $this->request($url);
+		return $result;
+	}
+
+
 	/* Private request method */
 
 	/**
