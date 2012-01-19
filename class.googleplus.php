@@ -8,7 +8,7 @@
  *    $config['consumer_secret']   = 'ABCdefhi_JKLmnop';
  *    $config['callbackUrl']  = 'http://' . $_SERVER['SERVER_NAME'] . '/googleplus/verify/';
  *
- *     $GooglePlus = new SimplePHPGooglePlus($config);
+ *     $GooglePlus = new GooglePlusPHP($config);
  */
 class GooglePlusPHP {
 
